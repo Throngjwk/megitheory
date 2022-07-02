@@ -168,7 +168,7 @@ var goToNextStage = () => {
 };
 
 var getSecondaryEquation = () => theory.latexSymbol + "=\\max\\rho^{0.2}";
-var getPublicationMultiplier = (tau) => tau.pow(1.107) / BigNumber.from(13);
+var getPublicationMultiplier = (tau) => tau.pow(0.621) / BigNumber.from(13);
 var getPublicationMultiplierFormula = (symbol) => "\\frac{{" + symbol + "}^{1.107}}{13}";
 var getTau = () => currency.value.pow(0.2);
 var get2DGraphValue = () => currency.value.sign * (BigNumber.ONE + currency.value.abs()).log10().toNumber();
