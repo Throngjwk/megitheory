@@ -63,6 +63,14 @@ var init = () => {
         b.getInfo = (amount) => Utils.getMathTo(getDesc(b.level), getDesc(b.level + amount));
     }
 
+    // a4
+    {
+        let getDesc = (level) => "a_4=\\sqrt{2^{" + level + "}}";
+        a4 = theory.createUpgrade(5, currency, new FirstFreeCost(new ExponentialCost(1e17, Math.log2(5))));
+        a4.getDescription = (_) => Utils.getMath(getDesc(a4.level));
+        a4.getInfo = (amount) => Utils.getMathTo(getDesc(a4.level), getDesc(a4.level + amount));
+    }
+
     /////////////////////
     // Permanent Upgrades
     theory.createPublicationUpgrade(0, currency, 1e10);
@@ -85,6 +93,13 @@ var init = () => {
         bExp.description = Localization.getUpgradeIncCustomExpDesc("\\beta", "0.1");
         bExp.info = Localization.getUpgradeIncCustomExpInfo("\\beta", "0.1");
         bExp.boughtOrRefunded = (_) => theory.invalidatePrimaryEquation();
+    }
+
+    {
+        a2Exp = theory.createMilestoneUpgrade(2, 3);
+        a2Exp.description = Localization.getUpgradeIncCustomExpDesc("a_2", "0.125");
+        a2Exp.info = Localization.getUpgradeIncCustomExpInfo("a_2", "0.125");
+        a2Exp.boughtOrRefunded = (_) => theory.invalidatePrimaryEquation();
     }
 
     updateAvailability();
@@ -117,9 +132,11 @@ var tick = (elapsedTime, multiplier) => {
     let bonus = theory.publicationMultiplier;
     if (auto.level > 0) {
         currency.value += dt * bonus * getA1(a1.level) *
-                                       getA2(a2.level) *
+                                       getA2(a2.level).pow(getA2Exponent(a2Exp.level)) *
                                        getA3(a3.level) *
-                                       getB(b.level).pow(getBExponent(bExp.level))
+                                       getB(b.level).pow(getBExponent(bExp.level)) *
+                                       getA4(a4.level)
+
     }
 }
 
@@ -127,6 +144,10 @@ var getPrimaryEquation = () => {
     let result = "\\dot{\\rho} = a_1";
 
     result += "a_2";
+
+    if (a2Exp.level == 1) result += "^{1.125}";
+    if (a2Exp.level == 2) result += "^{1.25}";
+    if (a2Exp.level == 3) result += "^{1.375}";
 
     result += "a_3";
 
@@ -136,6 +157,8 @@ var getPrimaryEquation = () => {
     if (bExp.level == 2) result += "^{1.20}";
     if (bExp.level == 3) result += "^{1.30}";
     if (bExp.level == 4) result += "^{1.40}";
+
+    if (auto.level > 0) result += "a_4";
 
     return result;
 }
@@ -154,6 +177,8 @@ var getA1 = (level) => Utils.getStepwisePowerSum(level, 2, 10, 0);
 var getA2 = (level) => BigNumber.TWO.pow(level).sqrt();
 var getA3 = (level) => Utils.getStepwisePowerSum(level, 2, 15, 0);
 var getB = (level) => Utils.getStepwisePowerSum(level, 8, 25, 0);
+var getA4 = (level) => BigNumber.TWO.pow(level).sqrt();
 var getBExponent = (level) => BigNumber.from(1 + 0.1 * level);
+var getA2Exponent = (level) => BigNumber.from(1 + 0.125 * level);
 
 init();
