@@ -150,3 +150,5 @@ var getA2 = (level) => BigNumber.TWO.pow(level).sqrt();
 var getA3 = (level) => Utils.getStepwisePowerSum(level, 2, 15, 0);
 var getB = (level) => Utils.getStepwisePowerSum(level, 8, 25, 0);
 var getBExponent = (level) => BigNumber.from(1 + 0.1 * level);
+
+init();
