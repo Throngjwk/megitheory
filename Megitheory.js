@@ -130,7 +130,12 @@ var getPrimaryEquation = () => {
 
     result += "a_3";
 
-    result += " \\beta ";
+    if (auto.level > 0) result += " \\beta ";
+
+    if (bExp.level == 1) result += "^{1.10}";
+    if (bExp.level == 2) result += "^{1.20}";
+    if (bExp.level == 3) result += "^{1.30}";
+    if (bExp.level == 4) result += "^{1.40}";
 
     return result;
 }
